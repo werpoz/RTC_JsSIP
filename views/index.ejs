@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= title %></title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+  </head>
+  <body>
+    <h1><%= title %></h1>
+    <p>Welcome to <%= title %></p>
+    <video id="video_local"/>
+    <video id="video_remote"/>
+    <audio id="audio_remote"/>
+    <script src="https://jssip.net/download/releases/jssip-3.8.0.min.js"></script>
+    <script>
+      // Create our JsSIP instance and run it:
+
+var socket = new JsSIP.WebSocketInterface('ws://54.86.73.5');
+var configuration = {
+  sockets  : [ socket ],
+  uri      : 'sip:5001@54.86.73.5',
+  password : 'janaq2021'
+};
+
+var ua = new JsSIP.UA(configuration);
+
+ua.start();
+
+// Register callbacks to desired call events
+var eventHandlers = {
+  'progress': function(e) {
+    console.log('call is in progress');
+  },
+  'failed': function(e) {
+    console.log('call failed with cause: '+ e.data.cause);
+  },
+  'ended': function(e) {
+    console.log('call ended with cause: '+ e.data.cause);
+  },
+  'confirmed': function(e) {
+    console.log('call confirmed');
+  }
+};
+
+var options = {
+  'eventHandlers'    : eventHandlers,
+  'mediaConstraints' : { 'audio': true, 'video': false }
+};
+
+var session = ua.call('sip:2006@54.86.73.5', options);
+    </script>
+  </body>
+</html>
